@@ -8,7 +8,7 @@ import { DialogField } from './dialog-field';
     <mat-dialog-content>
       <mat-form-field *ngFor="let field of data.fields">
         <mat-label>{{ field.name }}</mat-label>
-        <input matInput [value]="data.entity[field.key]" [disabled]="field.isDisabled" />
+        <input matInput (input)="handleFieldInput($event.target, field)" [value]="data.entity[field.key]" [disabled]="field.isDisabled" />
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions>
@@ -29,6 +29,13 @@ export class ModelEditDialog {
     public dialogRef: MatDialogRef<ModelEditDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
+  }
+
+  handleFieldInput(target: EventTarget, field: DialogField) {
+    const value = (target as HTMLInputElement).value;
+    const entity = this.data.entity;
+    entity[field.key] = value;
+    field.onInput(entity);
   }
 }
 
